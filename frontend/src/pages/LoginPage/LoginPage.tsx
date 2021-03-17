@@ -1,13 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import LoginBox from "@components/LoginBox/LoginBox";
 
-import "./styles/styles.css"
+import "@styles/styles.css"
 
-
-ReactDOM.render(
-    <React.StrictMode>
+const LoginPage = (): JSX.Element => {
+  return (
       <LoginBox />
-    </React.StrictMode>,
-    document.getElementById("root")
-);
+  )
+}
+
+export default LoginPage;
