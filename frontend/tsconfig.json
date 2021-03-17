@@ -5,6 +5,10 @@
       "allowSyntheticDefaultImports": true,
       "skipLibCheck": true,
       "noImplicitAny": true,
+      "baseUrl": ".",
+      "paths": {
+        "@components/*": ["./src/components/*"],
+      },
     "noImplicitThis": true,
     "strictNullChecks": true,
       "esModuleInterop": true,
