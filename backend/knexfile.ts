@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 module.exports = {
 
   development: {
@@ -44,7 +47,7 @@ module.exports = {
 
   production: {
     client: 'pg',
-    connection: process.env.DATABASE_URL,
+    connection: process.env.PRODUCTION_DATABASE_URL,
     migrations: {
       directory: './db/migrations',
       extensions: 'tx'
