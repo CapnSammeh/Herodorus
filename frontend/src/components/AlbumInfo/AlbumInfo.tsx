@@ -1,7 +1,6 @@
-
 import React from 'react';
 
-export const AlbumInfo: React.FC = () => {
+const AlbumInfo: React.FC = () => {
     return (
         <div className="flex space-x-3 bg-gray-400 mx-auto rounded-xl max-w-sm shadow-xl">
             <div className="flex-1 text-center p-10">
@@ -14,3 +13,5 @@ export const AlbumInfo: React.FC = () => {
         </div>
     )
 }
+
+export default AlbumInfo;
