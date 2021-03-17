@@ -4,6 +4,7 @@ import { setLogger } from 'react-query';
 
 //Pages Import
 import LoginPage from '@pages/LoginPage/LoginPage';
+import ArtPage from '@pages/ArtPage/ArtPage';
 
 setLogger({
     log: console.log,
@@ -14,8 +15,11 @@ setLogger({
 const App: React.FC = () => {
     return (
         <Switch>
-            <Route path="/login">
+            <Route exact path="/login">
                 <LoginPage />
+            </Route>
+            <Route exact path="/">
+                <ArtPage />
             </Route>
         </Switch>
     )
