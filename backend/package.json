@@ -29,7 +29,7 @@
     "express-validator": "^6.8.0",
     "helmet": "^4.2.0",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.21.17",
+    "knex": "^0.21.19",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-azure-ad-oauth2": "0.0.4",
