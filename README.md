@@ -28,3 +28,20 @@ If your Project does not need a backend server disregard the contents of ```/bac
 
 Only requirements for the frontend is that React must be used. Any NPM modules that may be of use can and should be utilised.
 
+## Requirements for Running Project:
+
+### Databases
+In order to run KNEX migrations, a .env file must be created in the root of your project. This file should look like the following example:
+
+```
+DEV_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/DEV_Spotify_Album_Art'
+TEST_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/TEST_Spotify_Album_Art'
+STAGING_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/STAGING_Spotify_Album_Art'
+PRODUCTION_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/PRODUCITON_Spotify_Album_Art'
+```
+
+You'll also require one of each of the following databases to be created in PostgreSQL:
+ - DEV_Spotify_Album_Art
+ - TEST_Spotify_Album_Art
+ - STAGING_Spotify_Album_Art
+ - PRODUCITON_Spotify_Album_Art
