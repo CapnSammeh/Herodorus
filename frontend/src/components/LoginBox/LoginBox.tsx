@@ -5,7 +5,7 @@ import { faMusic } from '@fortawesome/free-solid-svg-icons'
 const LoginBox: React.FC = () => {
   return (
     <div className="flex h-screen">
-      <div className="m-auto w-1/2 text-center border">
+      <div className="m-auto w-1/2 text-center  bg-gray-50 rounded-xl shadow-xl p-5">
         <h1>{"Sign in to Herodorus using your Spotify Account"}</h1>
         <br />
         <p>{"Herodorus uses your Spotify to access information specific to you, including your playlists, and what's currently playing."}</p>
