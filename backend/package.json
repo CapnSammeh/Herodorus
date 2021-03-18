@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "start": "node dist/app.js",
-    "dev": "tsc && nodemon src/app.ts",
+    "dev": "npx tsc && nodemon src/app.ts",
     "lint": "src/**/*.{js,ts,tsx}' --quiet --fix",
     "test": "ENVIRONMENT=test mocha -r ts-node/register ./tests/*.ts",
     "build": "eslint && mocha -r ts-node/register ./test/*.ts && ./src --fix && tsc",
@@ -67,7 +67,7 @@
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.0.0",
     "mocha": "^8.2.1",
-    "nodemon": "^2.0.6",
+    "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
     "supertest": "^6.0.1",
     "ts-node": "^9.1.1",
