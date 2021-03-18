@@ -1,7 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMusic } from '@fortawesome/free-solid-svg-icons';
-import Redirect from 'react-router-dom';
 
 const LoginBox: React.FC = () => {
   return (
