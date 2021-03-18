@@ -5,7 +5,7 @@ dotenv.config();
 const port = process.env.PORT || 3000;
 
 //Import Express
-import express from 'express';
+import express, { NextFunction } from 'express';
 import session from 'express-session';
 import { Application, Request, Response } from 'express';
 const app: Application = express();
@@ -55,7 +55,7 @@ Promise.resolve(data).then(() => {
   //Disable ETAG Header
   app
     .disable('etag');
-  //Use the Helmet and Morgan Middleware
+  //Use the Helmet, Morgan and Session Middleware
   app
     .use(helmet())
     .use(morgan('dev'))
@@ -76,45 +76,24 @@ Promise.resolve(data).then(() => {
   app
     .use(passport.initialize())
 
-    /*
-      Session middleware
-      This returns a middleware which will try to read a user out of the session; 
-      if one is there, it will store the user in req.user, if not, it will do nothing. Behind the scenes, this:
-    */
-   app
+  /*
+    Session middleware
+    This returns a middleware which will try to read a user out of the session; 
+    if one is there, it will store the user in req.user, if not, it will do nothing.
+  */
+  app
     .use(passport.session())
 
-  //Manage Get Requests
-  app
-    .get('/', (_req: Request, res: Response) => {
-      res.send(
-        '<a href="/auth/spotify">Login</a>'
-      )
-    });
-
+  /* Manage Get Requests */
   app
     .get('/api/auth/spotify', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private'] }))
 
-  /* 
-    Returns a middleware that runs the requested Strategy (in this case, that's Spotify)
-    With the response, we want to now start doing things with the db
-    //TODO Do things with the DB  
-  */
+  // Take over after successful login
   app
-    .get('/api/auth/spotify/callback',
-      passport.authenticate('spotify', { failureRedirect: '/login' })),
-    function (_req: Request, res: Response) {
-      console.log(res.statusMessage);
-    }
-
-  /* 
-    Log In Page
-  */
-  app
-    .get('/api/logged_in', (req: Request, res: Response) => {
-      res.send(
-        '<p>{' + req.statusCode + '}Logged in!</p><a href="/logout">Logout</a>'
-      )
+    .get('/api/auth/spotify/callback', function (_req: Request, res: Response, next: NextFunction) {
+      //TODO Stamp the user's passport here
+      res.redirect(301, '/art_page/')
+      next
     })
 
   app
