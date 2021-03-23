@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({path: ".env"});
 
 export namespace KnexConfig {
     export const environments = {
