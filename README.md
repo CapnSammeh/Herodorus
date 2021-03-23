@@ -1,47 +1,62 @@
-# blank-fullstack-setup
-Webpack, React, Express, Knex &amp; TS
+<h1 align="center">🎵Herodorus🎵</h1>
+<h2>Spotify Album Art Viewer</h2>
+<p>
+  <a href="spdx.org/licences/MIT.html" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
+</p>
 
-## For Intern Project
-Create a SPA (Single Page Application) using an online API that utilises OAuth 2.0. As such a backend/server is not required to be implemented given that the OAuth flow does not require server-to-server authentiation. The content of the application is up to you - with the functionality of the website fullfilling two user stories proposed by you. 
+> A beautiful, Single Page App that displays your currently playing, and most played music's album art using the Spotify API
 
-### Example APIs
- * Spotify - https://developer.spotify.com/documentation/general/guides/authorization-guide/#client-credentials-flow
- * Discord - https://discord.com/developers/docs/topics/oauth2
- * Twitter - https://developer.twitter.com/en/docs/twitter-api
+## Install
 
-### User Stores
+### Prerequisites:
+  - PostgreSQL
+    - Databases required for each environment:
+      - DEV_Herodorus
+      - TEST_Herodorus
+      - STAGING_Herodorus
+      - PRODUCITON_Herodorus
+  
+  This project uses <a href="https://www.npmjs.com/package/dotenv">DOTENV</a> in order to manage environment parameters. Create a file titled '.env' in the backend directory and fill the following parameters:
 
-Template: As _, I want _, so that _
+  ```env
+  // Database Config
+  DEV_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/DEV_Herodorus'
+  TEST_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/TEST_Herodorus'
+  STAGING_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/STAGING_Herodorus'
+  PRODUCTION_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/PRODUCITON_Herodorus'
+  SEEDS_DIR
+  
+  // Spotify Configuration
+  SPOTIFY_CLIENT_ID = ''
+  SPOTIFY_CLIENT_SECRET = ''
+  SPOTIFY_CALLBACK_URL = ''
+  ```
 
-e.g As an authorised spotify user, I want to see an analysis of my listening history, so that I can get a deeper understanding of what the type of music I listen to.
 
-For each user story also write a few dot points that ressemble an acceptance criteria.
-
-### Languages 
-This blank repo is set up with React, Tailwind, Express, Typscript & Webpack out of the box.
-
-Please Clone & purge git to make your own local copy (forking privileges to come). 
-
-Typescript is optional (but *highly* reccommended).
-
-If your Project does not need a backend server disregard the contents of ```/backend```
-
-Only requirements for the frontend is that React must be used. Any NPM modules that may be of use can and should be utilised.
-
-## Requirements for Running Project:
-
-### Databases
-In order to run KNEX migrations, a .env file must be created in the root of your project. This file should look like the following example:
-
+```sh
+npm install 
 ```
-DEV_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/DEV_Spotify_Album_Art'
-TEST_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/TEST_Spotify_Album_Art'
-STAGING_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/STAGING_Spotify_Album_Art'
-PRODUCTION_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/PRODUCITON_Spotify_Album_Art'
+
+## Usage
+
+```sh
+Ensure that you're running the installation command in both the frontend and backend folders; this is two (2) seperate applications.
 ```
 
-You'll also require one of each of the following databases to be created in PostgreSQL:
- - DEV_Spotify_Album_Art
- - TEST_Spotify_Album_Art
- - STAGING_Spotify_Album_Art
- - PRODUCITON_Spotify_Album_Art
+## Author
+
+👤 **Sam Herring**
+
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## 📝 License
+
+This project is [MIT](spdx.org/licences/MIT.html) licensed.
+
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
