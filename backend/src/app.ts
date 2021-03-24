@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 const port = process.env.PORT || 3000;
 
+//Import Reflect-MetaData for TypeORM
+import "reflect-metadata"
+
 //Import Express
 import express, { NextFunction } from 'express';
 import session from 'express-session';

@@ -38,6 +38,8 @@
     "passport-spotify": "^2.0.0",
     "pg": "^8.5.1",
     "ramda": "^0.27.1",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.31",
     "winston": "^3.3.3"
   },
   "devDependencies": {
@@ -51,7 +53,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mocha": "^8.2.0",
     "@types/morgan": "^1.9.2",
-    "@types/node": "^14.14.10",
+    "@types/node": "^14.14.35",
     "@types/passport-spotify": "^1.1.0",
     "@types/ramda": "^0.27.38",
     "@types/supertest": "^2.0.10",
