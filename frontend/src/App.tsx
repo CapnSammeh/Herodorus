@@ -15,12 +15,9 @@ setLogger({
 const App: React.FC = () => {
     return (
         <Switch>
-            <Route exact path="/login">
-                <LoginPage />
-            </Route>
-            <Route exact path="/">
-                <ArtPage />
-            </Route>
+            <Route exact path="/" component={LoginPage} />
+            <Route exact path="/login" component={LoginPage} />
+            <Route exact path="/art_page" component={ArtPage}/>
         </Switch>
     )
 }

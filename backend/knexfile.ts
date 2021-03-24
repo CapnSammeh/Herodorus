@@ -1,62 +1,9 @@
-import dotenv from 'dotenv';
-dotenv.config();
+// Update with your config settings.
+import { KnexConfig } from './src/utilities/KnexConfig';
 
 module.exports = {
-
-  development: {
-    client: 'pg',
-    connection: process.env.DEV_DATABASE_URL,
-    migrations: {
-      directory: './db/migrations',
-      extensions: 'tx'
-    },
-    seeds: {
-      directory: './db/seeds/development',
-      extensions: 'tx'
-    },
-    useNullAsDefault: true
-  },
-
-  test: {
-    client: 'pg',
-    connection: process.env.TEST_DATABASE_URL,
-    migrations: {
-      directory: './db/migrations',
-      extensions: 'tx'
-    },
-    seeds: {
-      directory: './db/seeds/test',
-      extensions: 'tx'
-    },
-    useNullAsDefault: true
-  },
-
-  staging: {
-    client: 'pg',
-    connection: process.env.STAGING_DATABASE_URL,
-    migrations: {
-      directory: './db/migrations',
-      extensions: 'tx'
-    },
-    seeds: {
-      directory: './db/seeds/staging',
-      extensions: 'tx'
-    },
-    useNullAsDefault: true
-  },
-
-  production: {
-    client: 'pg',
-    connection: process.env.PRODUCTION_DATABASE_URL,
-    migrations: {
-      directory: './db/migrations',
-      extensions: 'tx'
-    },
-    seeds: {
-      directory: './db/seeds/production',
-      extensions: 'tx'
-    },
-    useNullAsDefault: true
-  }
-
+  test: KnexConfig.environments.test,
+  development: KnexConfig.environments.development,
+  staging: KnexConfig.environments.staging,
+  production: KnexConfig.environments.production,
 };

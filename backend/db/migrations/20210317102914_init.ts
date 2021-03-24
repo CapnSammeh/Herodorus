@@ -7,9 +7,12 @@ export async function up(knex: Knex): Promise<void> {
         a Username String and Password String value.
     */
     return knex.schema.createTable('UserDetail', function (table) {
-        table.increments('userID');
-        table.string('username');
-        table.string('password');
+        table.increments('user_id');
+        table.string('spotify_id');
+        table.string('email');
+        table.string('display_name');
+        table.string('access_token');
+        table.string('refresh_token');
     })
 }
 
