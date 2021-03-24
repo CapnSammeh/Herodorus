@@ -18,6 +18,7 @@ const SpotifyStrategy = require('passport-spotify').Strategy;
 //Import Middleware
 import morgan from 'morgan';
 import helmet from 'helmet';
+import cors from 'cors';
 
 //Import Data Providers/Models
 import UserHandler from './models/User/UserHandler';
@@ -58,6 +59,13 @@ Promise.resolve(data).then(() => {
   //Use the Helmet, Morgan and Session Middleware
   app
     .use(helmet())
+    .use('*', function (_req, res, next){
+      res.header("Access-Control-Allow-Origin", "http://localhost:8080")
+      res.header("Access-Control-Allow-Headers", "X-Requested-With")
+      res.header('Access-Control-Allow-Headers', 'Content-Type')
+      // res.header('Access-Control-Allow-Credentials', true)
+      next(); 
+    })
     .use(morgan('dev'))
     .use(
       session({
@@ -66,6 +74,10 @@ Promise.resolve(data).then(() => {
         saveUninitialized: true
       })
     )
+
+  //Enable Pre-Flight
+  app
+    .options('*', cors);
 
   // Initialize Passport
   /*
@@ -92,7 +104,8 @@ Promise.resolve(data).then(() => {
   app
     .get('/api/auth/spotify/callback', function (_req: Request, res: Response, next: NextFunction) {
       //TODO Stamp the user's passport here
-      res.redirect(301, '/art_page/')
+      //Redirec thte user back to the React App
+      res.redirect(301, 'http://localhost:8080/art_page')
       next
     })
 
