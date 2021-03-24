@@ -21,7 +21,7 @@
   
 This project uses <a href="https://www.npmjs.com/package/dotenv">DOTENV</a> in order to manage environment parameters. Create a file titled '.env' in the backend directory and fill the following parameters:
 
-```env
+```
 // Database Config
 DEV_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/DEV_Herodorus'
 TEST_DATABASE_URL = 'postgres://[USERNAME]:[PASSWORD]@localhost:5432/TEST_Herodorus'
@@ -37,14 +37,14 @@ SPOTIFY_CALLBACK_URL = ''
 
 ### Install the Project Dependancies
 There are two projects reall at hand here, both the Backend and FrontEnd need their own dependencies installed by running the following in their respective root directories:
-```sh
+```
 npm install 
 ```
 
 ### Database Setup
 Once the required databases have been set up, they need to be initialized using KNEX. From the bakcend directory, run the following:
 
-```sh
+```
 npx knex 
 ```
 
@@ -52,6 +52,17 @@ npx knex
 ## Usage
 Ensure that you're running the installation command in both the frontend and backend folders; this is two (2) seperate applications.
 
+## Contributing
+
+### Frontend
+When generating frontend components, Generate-React-CLI should be used to maintain the consistency of the directory structure:
+```
+//Generate a Component
+npx generate-react-cli component COMPONENT_NAME
+
+//Generate a Page
+npx generate-react-cli component PAGE_NAME --type=page
+```
 
 ## Author
 
