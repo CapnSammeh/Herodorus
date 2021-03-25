@@ -5,7 +5,7 @@ dotenv.config();
 const port = process.env.PORT || 3000;
 
 //Import Reflect-MetaData for TypeORM
-import "reflect-metadata"
+import "reflect-metadata";
 
 //Import Express
 import express, { NextFunction } from 'express';
@@ -17,6 +17,12 @@ const app: Application = express();
 import passport from 'passport';
 const SpotifyStrategy = require('passport-spotify').Strategy;
 
+/*
+TESTING 
+*/
+
+import { createConnection } from 'typeorm';
+import { UserDetail } from './entity/UserDetail/UserDetail';
 
 //Import Middleware
 import morgan from 'morgan';
@@ -25,7 +31,8 @@ import cors from 'cors';
 
 //Import Data Providers/Models
 import UserHandler from './models/User/UserHandler';
-import DataProvider, { DataClient } from './DataProvider';
+import createHttpError from 'http-errors';
+// import DataProvider, { DataClient } from './DataProvider';
 
 /* Setup Passport */
 passport.serializeUser(function (user, done) {
@@ -53,9 +60,13 @@ passport.use(
 
 /* Run the Server */
 //Make a connection to the DB
-const data: Promise<DataClient> = DataProvider.create();
+const data = createConnection({type: "postgres", url: process.env.DEV_DATABASE_URL, entities:[UserDetail], synchronize:true})
+
 //When resolved (i.e., the Database has been connected to)...
-Promise.resolve(data).then(() => {
+Promise.resolve(data).then( async connection => {
+  //Decalre the Repositories for TypeORM
+  let userRepository = connection.getRepository(UserDetail);
+
   //Disable ETAG Header
   app
     .disable('etag');
@@ -117,6 +128,15 @@ Promise.resolve(data).then(() => {
       req.logout();
       res.redirect('/');
     });
+
+  app.get('/api/getuser/:id', async function(req: Request, res: Response){
+    const user = await userRepository.findOneOrFail(req.params.id);
+    if(user){
+      res.json(user);
+    } else {
+      createHttpError(400, res);
+    } 
+  })
 
   //Listen on Ports...
   app
