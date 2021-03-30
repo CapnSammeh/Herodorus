@@ -17,10 +17,7 @@ const app: Application = express();
 import passport from 'passport';
 const SpotifyStrategy = require('passport-spotify').Strategy;
 
-/*
-TESTING 
-*/
-
+//TypeORM and Repositories
 import { createConnection } from 'typeorm';
 import { UserDetail } from './entity/UserDetail/UserDetail';
 
@@ -30,9 +27,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 
 //Import Data Providers/Models
-import UserHandler from './models/User/UserHandler';
 import createHttpError from 'http-errors';
-// import DataProvider, { DataClient } from './DataProvider';
 
 /* Setup Passport */
 passport.serializeUser(function (user, done) {
@@ -40,7 +35,7 @@ passport.serializeUser(function (user, done) {
 })
 
 passport.deserializeUser(function (_user, done) {
-  done(null, UserHandler);
+  done(null, UserDetail);
 })
 
 passport.use(
@@ -129,14 +124,32 @@ Promise.resolve(data).then( async connection => {
       res.redirect('/');
     });
 
-  app.get('/api/getuser/:id', async function(req: Request, res: Response){
-    const user = await userRepository.findOneOrFail(req.params.id);
-    if(user){
-      res.json(user);
-    } else {
-      createHttpError(400, res);
-    } 
-  })
+  app
+      .get('/api/getuser/:id', async function(req: Request, res: Response){
+      const user = await userRepository.findOneOrFail(req.params.id);
+      if(user){
+        res.json(user);
+      } else {
+        createHttpError(400, res);
+      } 
+    })
+
+  app
+    .get('/api/createuser', async function(_req: Request, res: Response){
+      const user = userRepository.create({
+        spotify_id: "Test",
+        email: "Test",
+        display_name: "Sam Herring",
+        access_token: "AT: 2",
+        refresh_token: "RT: 2"
+      })
+      const saveUser = await userRepository.save(user);
+      if(saveUser){
+        res.json(saveUser);
+      } else {
+        createHttpError(400, res);
+      }
+    });
 
   //Listen on Ports...
   app
