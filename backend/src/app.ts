@@ -110,18 +110,28 @@ Promise.resolve(data).then(async connection => {
           })
 
           const saveUser = await userRepository.stampPassport(appUser);
-          if(saveUser){
-            return res.redirect('http://localhost:8080/art_page');
+          if (saveUser) {
+            req.logIn(saveUser, function(err){
+              if(err) {
+                return next(createHttpError(500, "Error Logging into Express Session"))
+              }
+              return res.redirect('http://localhost:8080/art_page');
+            })
           } else {
             createHttpError(400, res);
           }
         })(req, res, next)
       })
 
+  //TODO: Manage Sessions/Logout
+
+  //FIXME: This is current broken; spinning wheel on logout.
   app
-    .get('/api/logout', function (req: Request, _res: Response) {
+    .get('/api/logout', function (req: Request, res: Response) {
+      //Handle the session termination here
       req.logout();
-      // res.redirect('/');
+      res.send()
+      res.redirect('http://localhost:8080/')
     });
 
   //Listen on Ports...
