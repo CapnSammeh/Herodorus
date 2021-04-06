@@ -15,8 +15,8 @@ const app: Application = express();
 
 //TypeORM and Repositories
 import { createConnection, getCustomRepository } from 'typeorm';
-import { UserDetail } from './entity/UserDetail/UserDetail';
-import { UserRepository } from './entity/UserDetail/UserRepository';
+import { UserDetail } from './db/entity/UserDetail/UserDetail';
+import { UserRepository } from './db/entity/UserDetail/UserRepository';
 
 //Import Middleware
 import morgan from 'morgan';
@@ -28,7 +28,7 @@ import createHttpError from 'http-errors';
 
 //Passport.JS
 import passport from 'passport';
-import './passport';
+import './utilities/passport';
 
 /* Run the Server */
 //Make a connection to the DB

@@ -1,7 +1,7 @@
 //Import Passport
 import passport from 'passport';
 import { getRepository } from 'typeorm';
-import { UserDetail } from './entity/UserDetail/UserDetail';
+import { UserDetail } from '../db/entity/UserDetail/UserDetail';
 const SpotifyStrategy = require('passport-spotify').Strategy;
 
 /* Setup Passport */
