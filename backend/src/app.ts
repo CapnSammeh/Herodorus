@@ -4,16 +4,19 @@ import dotenv from 'dotenv';
 dotenv.config();
 const port = process.env.PORT || 3000;
 
+//Import Reflect-MetaData for TypeORM
+import "reflect-metadata";
+
 //Import Express
-import express, { NextFunction } from 'express';
+import express from 'express';
 import session from 'express-session';
 import { Application, Request, Response } from 'express';
 const app: Application = express();
 
-//Import Passport
-import passport from 'passport';
-const SpotifyStrategy = require('passport-spotify').Strategy;
-
+//TypeORM and Repositories
+import { createConnection, getCustomRepository } from 'typeorm';
+import { UserDetail } from './db/entity/UserDetail/UserDetail';
+import { UserRepository } from './db/entity/UserDetail/UserRepository';
 
 //Import Middleware
 import morgan from 'morgan';
@@ -21,50 +24,34 @@ import helmet from 'helmet';
 import cors from 'cors';
 
 //Import Data Providers/Models
-import UserHandler from './models/User/UserHandler';
-import DataProvider, { DataClient } from './DataProvider';
+import createHttpError from 'http-errors';
 
-/* Setup Passport */
-passport.serializeUser(function (user, done) {
-  done(null, user);
-})
-
-passport.deserializeUser(function (_user, done) {
-  done(null, UserHandler);
-})
-
-passport.use(
-  new SpotifyStrategy({
-    clientID: process.env.SPOTIFY_CLIENT_ID,
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    callbackURL: process.env.SPOTIFY_CALLBACK_URL,
-  },
-    function (_accessToken: String, _refreshToken: String, _expires_in: Number, profile: any, done: any) {
-      process.nextTick(function () {
-        return done(null, profile);
-      })
-    }
-
-  )
-)
+//Passport.JS
+import passport from 'passport';
+import './utilities/passport';
 
 /* Run the Server */
 //Make a connection to the DB
-const data: Promise<DataClient> = DataProvider.create();
+const data = createConnection({ type: "postgres", url: process.env.DEV_DATABASE_URL, entities: [UserDetail], synchronize: true })
+
 //When resolved (i.e., the Database has been connected to)...
-Promise.resolve(data).then(() => {
+Promise.resolve(data).then(async connection => {
+  //Declare the Repositories for TypeORM
+  const userDetail = connection.getRepository(UserDetail);
+  const userRepository = getCustomRepository(UserRepository);
+
   //Disable ETAG Header
   app
     .disable('etag');
   //Use the Helmet, Morgan and Session Middleware
   app
     .use(helmet())
-    .use('*', function (_req, res, next){
+    .use('*', function (_req, res, next) {
       res.header("Access-Control-Allow-Origin", "http://localhost:8080")
       res.header("Access-Control-Allow-Headers", "X-Requested-With")
       res.header('Access-Control-Allow-Headers', 'Content-Type')
       // res.header('Access-Control-Allow-Credentials', true)
-      next(); 
+      next();
     })
     .use(morgan('dev'))
     .use(
@@ -82,7 +69,7 @@ Promise.resolve(data).then(() => {
   // Initialize Passport
   /*
     Returns a middleare which must be called at the start of express apps 
-    This sets _req.passport which is used prolifically by Passport
+    This sets req.passport which is used prolifically by Passport
     Also sets up req.login() and req.logout().
   */
   app
@@ -102,17 +89,49 @@ Promise.resolve(data).then(() => {
 
   // Take over after successful login
   app
-    .get('/api/auth/spotify/callback', function (_req: Request, res: Response, next: NextFunction) {
-      //TODO Stamp the user's passport here
-      //Redirec thte user back to the React App
-      res.redirect(301, 'http://localhost:8080/art_page')
-      next
-    })
+    .get('/api/auth/spotify/callback',
+      function (req: Request, res: Response, next) {
+        passport.authenticate('spotify', async function (err: Error, user: any, _info: any) {
+          //If we see any errors, throw error
+          if (err) {
+            return next(err)
+          }
+          //Else, if we don't see a valid user in the response, dump em back to the homepage.
+          if (!user) {
+            return res.redirect('/')
+          }
+          //TODO: Passport Stamp and Session Handling Logic
+          const appUser = userDetail.create({
+            spotify_id: user.id,
+            email: user._json.email,
+            display_name: user._json.display_name,
+            access_token: user.accessToken,
+            refresh_token: user.refreshToken
+          })
 
+          const saveUser = await userRepository.stampPassport(appUser);
+          if (saveUser) {
+            req.logIn(saveUser, function(err){
+              if(err) {
+                return next(createHttpError(500, "Error Logging into Express Session"))
+              }
+              return res.redirect('http://localhost:8080/art_page');
+            })
+          } else {
+            createHttpError(400, res);
+          }
+        })(req, res, next)
+      })
+
+  //TODO: Manage Sessions/Logout
+
+  //FIXME: This is current broken; spinning wheel on logout.
   app
     .get('/api/logout', function (req: Request, res: Response) {
+      //Handle the session termination here
       req.logout();
-      res.redirect('/');
+      res.send()
+      res.redirect('http://localhost:8080/')
     });
 
   //Listen on Ports...
