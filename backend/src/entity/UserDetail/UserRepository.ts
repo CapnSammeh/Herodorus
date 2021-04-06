@@ -30,6 +30,7 @@ export class UserRepository extends Repository<UserDetail> {
         return user
     }
 
+    //Function for updating the user's refresh token
     async updateRefreshToken(user_id: number, refresh_token: string) {
         const user = await this.createQueryBuilder()
             .select("user_detail")
@@ -54,6 +55,7 @@ export class UserRepository extends Repository<UserDetail> {
         }
     }
 
+    //Function for updating teh user's access token
     async updateAccessToken(user_id: number, access_token: string) {
         const user = await this.createQueryBuilder()
             .select("user_detail")

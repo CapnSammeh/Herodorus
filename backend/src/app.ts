@@ -100,7 +100,7 @@ Promise.resolve(data).then(async connection => {
           if (!user) {
             return res.redirect('/')
           }
-          //TODO:Passport Stamp and Session Handling Logic
+          //TODO: Passport Stamp and Session Handling Logic
           const appUser = userDetail.create({
             spotify_id: user.id,
             email: user._json.email,
