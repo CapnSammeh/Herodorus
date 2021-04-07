@@ -14,9 +14,12 @@ import { Application, Request, Response } from 'express';
 const app: Application = express();
 
 //TypeORM and Repositories
+import { TypeormStore } from 'connect-typeorm/out';
 import { createConnection, getCustomRepository } from 'typeorm';
 import { UserDetail } from './db/entity/UserDetail/UserDetail';
 import { UserRepository } from './db/entity/UserDetail/UserRepository';
+import { SessionDetail } from './db/entity/SessionDetail/SessionDetail';
+// import { SessionRepository } from './db/entity/SessionDetail/SessionRepository';
 
 //Import Middleware
 import morgan from 'morgan';
@@ -32,13 +35,20 @@ import './utilities/passport';
 
 /* Run the Server */
 //Make a connection to the DB
-const data = createConnection({ type: "postgres", url: process.env.DEV_DATABASE_URL, entities: [UserDetail], synchronize: true })
+const data = createConnection({
+  type: "postgres",
+  url: process.env.DEV_DATABASE_URL,
+  entities: [UserDetail, SessionDetail],
+  synchronize: true
+})
 
 //When resolved (i.e., the Database has been connected to)...
 Promise.resolve(data).then(async connection => {
   //Declare the Repositories for TypeORM
   const userDetail = connection.getRepository(UserDetail);
   const userRepository = getCustomRepository(UserRepository);
+  const sessionDetail = connection.getRepository(SessionDetail);
+  // const sessionRepository = getCustomRepository(SessionRepository);
 
   //Disable ETAG Header
   app
@@ -56,9 +66,18 @@ Promise.resolve(data).then(async connection => {
     .use(morgan('dev'))
     .use(
       session({
+        store: new TypeormStore({
+          cleanupLimit: 2,
+          ttl: (1 * 60 * 60)
+        }).connect(sessionDetail),
         secret: 'keyboard cat',
         resave: true,
-        saveUninitialized: true
+        saveUninitialized: true,
+        name: "id",
+        cookie: {
+          path: "/",
+          maxAge: 1800000
+        }
       })
     )
 
@@ -92,27 +111,19 @@ Promise.resolve(data).then(async connection => {
     .get('/api/auth/spotify/callback',
       function (req: Request, res: Response, next) {
         passport.authenticate('spotify', async function (err: Error, user: any, _info: any) {
-          //If we see any errors, throw error
-          if (err) {
-            return next(err)
-          }
-          //Else, if we don't see a valid user in the response, dump em back to the homepage.
-          if (!user) {
-            return res.redirect('/')
-          }
-          //TODO: Passport Stamp and Session Handling Logic
-          const appUser = userDetail.create({
+          if (err) { return next(err) }
+          if (!user) { return res.redirect('/') }
+          const saveUser = await userRepository.stampPassport(userDetail.create({
             spotify_id: user.id,
             email: user._json.email,
             display_name: user._json.display_name,
             access_token: user.accessToken,
             refresh_token: user.refreshToken
-          })
-
-          const saveUser = await userRepository.stampPassport(appUser);
+          }))
+          //If the user is successfully created in the db
           if (saveUser) {
-            req.logIn(saveUser, function(err){
-              if(err) {
+            req.logIn(saveUser, function (err) {
+              if (err) {
                 return next(createHttpError(500, "Error Logging into Express Session"))
               }
               return res.redirect('http://localhost:8080/art_page');
