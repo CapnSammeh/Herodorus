@@ -14,12 +14,9 @@ import { Application, Request, Response } from 'express';
 const app: Application = express();
 
 //TypeORM and Repositories
-import { TypeormStore } from 'connect-typeorm/out';
 import { createConnection, getCustomRepository } from 'typeorm';
 import { UserDetail } from './db/entity/UserDetail/UserDetail';
 import { UserRepository } from './db/entity/UserDetail/UserRepository';
-import { SessionDetail } from './db/entity/SessionDetail/SessionDetail';
-// import { SessionRepository } from './db/entity/SessionDetail/SessionRepository';
 
 //Import Middleware
 import morgan from 'morgan';
@@ -38,7 +35,7 @@ import './utilities/passport';
 const data = createConnection({
   type: "postgres",
   url: process.env.DEV_DATABASE_URL,
-  entities: [UserDetail, SessionDetail],
+  entities: [UserDetail],
   synchronize: true
 })
 
@@ -47,8 +44,6 @@ Promise.resolve(data).then(async connection => {
   //Declare the Repositories for TypeORM
   const userDetail = connection.getRepository(UserDetail);
   const userRepository = getCustomRepository(UserRepository);
-  const sessionDetail = connection.getRepository(SessionDetail);
-  // const sessionRepository = getCustomRepository(SessionRepository);
 
   //Disable ETAG Header
   app
@@ -66,10 +61,6 @@ Promise.resolve(data).then(async connection => {
     .use(morgan('dev'))
     .use(
       session({
-        store: new TypeormStore({
-          cleanupLimit: 2,
-          ttl: (1 * 60 * 60)
-        }).connect(sessionDetail),
         secret: 'keyboard cat',
         resave: true,
         saveUninitialized: true,
