@@ -18,6 +18,10 @@ const App: React.FC = () => {
             <Route exact path="/" component={LoginPage} />
             <Route exact path="/login" component={LoginPage} />
             <Route exact path="/art_page" component={ArtPage}/>
+            <Route path="/logout" component={() => {
+                window.location.href="/api/logout";
+                return null;
+            }}/>
         </Switch>
     )
 }
