@@ -133,11 +133,10 @@ Promise.resolve(data).then(async connection => {
 
   //FIXME: This is current broken; spinning wheel on logout.
   app
-    .get('/api/logout', function (req: Request, res: Response) {
+    .get('/api/logout', function (req: Request, res: Response, next) {
       //Handle the session termination here
       req.logout();
-      res.send()
-      res.redirect('http://localhost:8080/')
+      return next(res.redirect('http://localhost:8080/'));
     });
 
 
