@@ -18,8 +18,8 @@ export class UserRepository extends Repository<UserDetail> {
             return this.save(user);
         } else {
             //If the user is in the DB, update their accesstoken and refreshtoken
-            this.updateRefreshToken(currentUser.user_id, currentUser.refresh_token);
-            this.updateAccessToken(currentUser.user_id, currentUser.access_token);
+            this.updateRefreshToken(user.user_id, user.refresh_token);
+            this.updateAccessToken(user.user_id, user.access_token);
             console.log("User in DB");
             return currentUser;
         }

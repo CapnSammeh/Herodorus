@@ -32,6 +32,9 @@ import createHttpError from 'http-errors';
 import passport from 'passport';
 import './utilities/passport';
 
+//Import Spotify Calls
+import { getTenSongs } from "./spotify-calls";
+
 /* Run the Server */
 //Make a connection to the DB
 const data = createConnection({
@@ -99,7 +102,7 @@ Promise.resolve(data).then(async connection => {
 
   /* Manage Get Requests */
   app
-    .get('/api/auth/spotify', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private'] }))
+    .get('/api/auth/spotify', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private', 'user-read-recently-played'] }))
 
   // Take over after successful login
   app
@@ -121,6 +124,8 @@ Promise.resolve(data).then(async connection => {
               if (err) {
                 return next(createHttpError(500, "Error Logging into Express Session"))
               }
+              //TODO Populate the DB here with some relevant information
+              if(req.user){getTenSongs(req.user)};
               return next(res.redirect('http://localhost:8080/art_page'));
             })
           } else {
