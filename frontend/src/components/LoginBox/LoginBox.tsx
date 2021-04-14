@@ -7,7 +7,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'center',
     alignItems: 'center',
     display: 'flex',
-    paddingTop: '20%',
+    marginTop: '10%',
   },
 
   card: {
@@ -15,6 +15,7 @@ const useStyles = makeStyles(() => ({
     minWidth: '60%',
     minHeight: '60%',
     padding: 25,
+    margin: 25,
   },
 
   button_actions: {
