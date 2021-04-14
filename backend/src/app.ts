@@ -152,6 +152,8 @@ Promise.resolve(data).then(async connection => {
           if (songQuery) {
             const currentSong: SongDetail = songQuery as SongDetail
             res.send(currentSong);
+          } else {
+            done(createHttpError(204, res))
           }
         }
       })
@@ -167,6 +169,8 @@ Promise.resolve(data).then(async connection => {
           if (songsQuery) {
             const songList: SongDetail[] = songsQuery as SongDetail[]
             res.send(songList);
+          } else {
+            done(createHttpError(204, res))
           }
         }
       })
