@@ -32,6 +32,7 @@ export async function getTenSongs(user: Express.User) {
         .insert()
         .into(SongDetail)
         .values([song])
+        .onConflict(`DO NOTHING`)
         .execute();
     }
 }
