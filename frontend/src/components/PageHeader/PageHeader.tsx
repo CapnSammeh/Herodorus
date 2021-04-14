@@ -1,24 +1,42 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCompactDisc } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import MusicNoteIcon from '@material-ui/icons/MusicNote';
 
-const PageHeader: React.FC = () => (
-  <nav className="flex items-center justify-between flex-wrap bg-gray-600 p-6">
-    <div className="flex items-center flex-no-shrink text-white mr-6">
-      <div className="inline-block text-xl px-4 leading-none rounded text-white border-white hover:border-current hover:text-gray-500 hover:bg-white mt-4 lg:mt-0">
-        <Link to="/">
-          <FontAwesomeIcon icon={faCompactDisc} />
-          <span className="font-semibold text-xl tracking-tight">Herodorus</span>
-        </Link>
-      </div>
-    </div>
-    <div className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-current hover:text-gray-500 hover:bg-white mt-4 lg:mt-0">
-      <Link to="/login">
-        Login
-      </Link>
-    </div>
-  </nav>
-);
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
 
-export default PageHeader;
+const PageHeader: React.FC = () => {
+  const classes = useStyles();
+  return (
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" href="/">
+            <MusicNoteIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Herodorus
+          </Typography>
+          <Button color="inherit" href="/login">Login</Button>
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
+
+}
+
+export default PageHeader
