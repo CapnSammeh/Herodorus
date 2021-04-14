@@ -43,6 +43,7 @@ export async function getTenSongs(user: Express.User) {
             artist_name: singleSong.track.album.artists[0].name,
             album_name: singleSong.track.album.name,
             song_title: singleSong.track.name,
+            played_datetime: singleSong.played_at,
             user_: dbUser
         }
 
