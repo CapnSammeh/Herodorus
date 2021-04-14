@@ -121,8 +121,7 @@ Promise.resolve(data).then(async connection => {
               if (err) {
                 return next(createHttpError(500, "Error Logging into Express Session"))
               }
-              // return res.redirect('http://localhost:8080/art_page');
-              return next(res.redirect("http://localhost:3000/api/currentsong"));
+              return next(res.redirect('http://localhost:8080/art_page'));
             })
           } else {
             createHttpError(400, res);
