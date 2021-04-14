@@ -7,6 +7,11 @@ export async function getTenSongs(user: Express.User) {
     const dbUser: UserDetail = user as UserDetail;
     //Clear the songs in the DB for the current user
     const db = await getConnection();
+    db.createQueryBuilder()
+        .delete()
+        .from(SongDetail)
+        .where("user_ = :user", { user: dbUser.user_id })
+        .execute();
 
     const songs = await fetch(
         "https://api.spotify.com/v1/me/player/recently-played?limit=10", {
@@ -18,7 +23,7 @@ export async function getTenSongs(user: Express.User) {
     }
     ).then(res => res.json())
 
-    for (var singleSong of songs.items){
+    for (var singleSong of songs.items) {
         const song: Omit<SongDetail, "song_id"> = {
             album_art: singleSong.track.album.images[0].url,
             spotify_song_id: singleSong.track.id,
@@ -27,12 +32,12 @@ export async function getTenSongs(user: Express.User) {
             song_title: singleSong.track.name,
             user_: dbUser
         }
-    
+
         db.createQueryBuilder()
-        .insert()
-        .into(SongDetail)
-        .values([song])
-        .onConflict(`DO NOTHING`)
-        .execute();
+            .insert()
+            .into(SongDetail)
+            .values([song])
+            .onConflict(`DO NOTHING`)
+            .execute();
     }
 }
