@@ -24,4 +24,6 @@ export class SongDetail {
 
     @Column()
     album_art: string;
+
+    //TODO: Should there be a timestamp here? That way we can just remove the oldest thing that's been listened too?
 }

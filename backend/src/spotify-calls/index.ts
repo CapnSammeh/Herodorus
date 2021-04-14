@@ -6,6 +6,18 @@ import { getConnection } from 'typeorm';
 export async function getTenSongs(user: Express.User) {
     const dbUser: UserDetail = user as UserDetail;
     //Clear the songs in the DB for the current user
+    //TODO: Fix this up, notes below
+    /*
+        Not sure this is the best way to go about this
+
+        Actually I'm almost certain it isn't.
+
+        The idea here is that the user should have 10 songs loaded up, ready to go, that way if they're not currently playing anything, we can fall back to cycling through those. 
+        By deleting what's in the db, we give ourselves the chance to populate some more recent songs so we're not showing anything super stale, but again, is that the idea here?
+        The arbitriary 10-song-limit was just something I considered appropriate, could be modified. 
+
+        
+    */
     const db = await getConnection();
     db.createQueryBuilder()
         .delete()
@@ -20,6 +32,7 @@ export async function getTenSongs(user: Express.User) {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + dbUser.access_token,
         }
+        //TODO: If this thing fails because of a forbidden error, it means we've probably got a bum access token; we need to generate a new one. 
     }
     ).then(res => res.json())
 

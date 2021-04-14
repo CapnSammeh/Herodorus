@@ -124,7 +124,7 @@ Promise.resolve(data).then(async connection => {
               if (err) {
                 return next(createHttpError(500, "Error Logging into Express Session"))
               }
-              //TODO Populate the DB here with some relevant information
+              //TODO: Populate the DB here with some relevant information
               if (req.user) { getTenSongs(req.user) };
               return next(res.redirect('http://localhost:8080/art_page'));
             })
@@ -136,7 +136,6 @@ Promise.resolve(data).then(async connection => {
 
   //TODO: Manage Sessions/Logout
 
-  //FIXME: This is current broken; spinning wheel on logout.
   app
     .get('/api/logout', function (req: Request, res: Response, next) {
       //Handle the session termination here
