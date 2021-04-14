@@ -14,12 +14,11 @@ import { Application, Request, Response } from 'express';
 const app: Application = express();
 
 //TypeORM and Repositories
-import { TypeormStore } from 'connect-typeorm/out';
 import { createConnection, getCustomRepository } from 'typeorm';
 import { UserDetail } from './db/entity/UserDetail/UserDetail';
 import { UserRepository } from './db/entity/UserDetail/UserRepository';
-import { SessionDetail } from './db/entity/SessionDetail/SessionDetail';
-// import { SessionRepository } from './db/entity/SessionDetail/SessionRepository';
+import { SongDetail } from './db/entity/SongDetail/SongDetail';
+import { SongRepository } from './db/entity/SongDetail/SongRepository';
 
 //Import Middleware
 import morgan from 'morgan';
@@ -38,7 +37,7 @@ import './utilities/passport';
 const data = createConnection({
   type: "postgres",
   url: process.env.DEV_DATABASE_URL,
-  entities: [UserDetail, SessionDetail],
+  entities: [UserDetail, SongDetail],
   synchronize: true
 })
 
@@ -47,8 +46,8 @@ Promise.resolve(data).then(async connection => {
   //Declare the Repositories for TypeORM
   const userDetail = connection.getRepository(UserDetail);
   const userRepository = getCustomRepository(UserRepository);
-  const sessionDetail = connection.getRepository(SessionDetail);
-  // const sessionRepository = getCustomRepository(SessionRepository);
+  // const songDetail = connection.getRepository(SongDetail);
+  const songRepository = getCustomRepository(SongRepository);
 
   //Disable ETAG Header
   app
@@ -66,10 +65,6 @@ Promise.resolve(data).then(async connection => {
     .use(morgan('dev'))
     .use(
       session({
-        store: new TypeormStore({
-          cleanupLimit: 2,
-          ttl: (1 * 60 * 60)
-        }).connect(sessionDetail),
         secret: 'keyboard cat',
         resave: true,
         saveUninitialized: true,
@@ -112,7 +107,7 @@ Promise.resolve(data).then(async connection => {
       function (req: Request, res: Response, next) {
         passport.authenticate('spotify', async function (err: Error, user: any, _info: any) {
           if (err) { return next(err) }
-          if (!user) { return res.redirect('/') }
+          if (!user) { return next(res.redirect('/')) }
           const saveUser = await userRepository.stampPassport(userDetail.create({
             spotify_id: user.id,
             email: user._json.email,
@@ -126,7 +121,7 @@ Promise.resolve(data).then(async connection => {
               if (err) {
                 return next(createHttpError(500, "Error Logging into Express Session"))
               }
-              return res.redirect('http://localhost:8080/art_page');
+              return next(res.redirect('http://localhost:8080/art_page'));
             })
           } else {
             createHttpError(400, res);
@@ -138,12 +133,46 @@ Promise.resolve(data).then(async connection => {
 
   //FIXME: This is current broken; spinning wheel on logout.
   app
-    .get('/api/logout', function (req: Request, res: Response) {
+    .get('/api/logout', function (req: Request, res: Response, next) {
       //Handle the session termination here
       req.logout();
-      res.send()
-      res.redirect('http://localhost:8080/')
+      return next(res.redirect('http://localhost:8080/'));
     });
+
+
+  app
+    .get('/api/currentsong',
+      async function (req: Request, res: Response, done) {
+        const user: UserDetail = req.user as UserDetail;
+        if (!user) {
+          done(createHttpError(403, res));
+        } else {
+          const songQuery = await songRepository.getCurrentSong(user.user_id);
+          if (songQuery) {
+            const currentSong: SongDetail = songQuery as SongDetail
+            res.send(currentSong);
+          } else {
+            done(createHttpError(204, res))
+          }
+        }
+      })
+
+  app
+    .get("/api/allsongs",
+      async function (req: Request, res: Response, done) {
+        const user: UserDetail = req.user as UserDetail;
+        if (!user) {
+          done(createHttpError(403, res));
+        } else {
+          const songsQuery = await songRepository.getAllSongs(user.user_id);
+          if (songsQuery) {
+            const songList: SongDetail[] = songsQuery as SongDetail[]
+            res.send(songList);
+          } else {
+            done(createHttpError(204, res))
+          }
+        }
+      })
 
   //Listen on Ports...
   app

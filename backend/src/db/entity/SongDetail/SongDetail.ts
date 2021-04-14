@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, JoinTable, ManyToMany } from "typeorm";
+import { Entity, Column, PrimaryColumn, ManyToOne } from "typeorm";
 import { UserDetail } from "../UserDetail/UserDetail";
 
 @Entity()
@@ -7,18 +7,7 @@ export class SongDetail {
     @PrimaryColumn()
     song_id: number;
 
-    @ManyToMany(() => UserDetail)
-    @JoinTable({
-        name: "songs_by_user",
-        joinColumn: {
-            name: "song_id",
-            referencedColumnName: "song_id"
-        },
-        inverseJoinColumn: {
-            name: "user",
-            referencedColumnName: "user_id"
-        }
-    })
+    @ManyToOne(() => UserDetail)
     user_: UserDetail;
 
     @Column()

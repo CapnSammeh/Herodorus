@@ -1,26 +1,48 @@
+import { Box, Button, Card, CardActions, CardHeader, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMusic } from '@fortawesome/free-solid-svg-icons';
+
+const useStyles = makeStyles(() => ({
+  box: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+    marginTop: '10%',
+  },
+
+  card: {
+    textAlign: 'center',
+    minWidth: '60%',
+    minHeight: '60%',
+    padding: 25,
+    margin: 25,
+  },
+
+  button_actions: {
+    alignItems: 'center',
+    display: 'inherit',
+  }
+}));
 
 const LoginBox: React.FC = () => {
+  const classes = useStyles();
   return (
-    <div className="flex h-screen">
-      <div className="m-auto w-1/2 text-center  bg-gray-50 rounded-xl shadow-xl p-5">
-        <h1>{"Sign in to Herodorus using your Spotify Account"}</h1>
-        <br />
-        <p>{"Herodorus uses your Spotify to access information specific to you, including your playlists, and what's currently playing."}</p>
-        <p>{"Here is where we'll put some additional information"}</p>
-        <br/>
-        <button onClick={() => window.location.href = '/api/auth/spotify'} type="button" className="btn-outline-primary transition duration-300 ease-in-out focus:outline-none focus:shadow-outline border border-green-700 hover:bg-green-700 text-green-700 hover:text-white font-normal py-2 px-4 rounded">
-          <FontAwesomeIcon icon={faMusic} className="mr-2"/>
-          <span>
+    <Box className={classes.box}>
+      <Card className={classes.card}>
+        <CardHeader title="Sign in to Herodorus using your Spotify Account" />
+        <Typography variant="body1" component="p">
+          {"Herodorus uses your Spotify to access information specific to you, including your playlists, and what's currently playing."}
+          <br />
+          {"Here is where we'll put some additional information"}
+        </Typography>
+        <CardActions className={classes.button_actions}>
+          <Button variant="contained" color="primary" onClick={() => { window.location.href = "/api/auth/spotify" }}>
             Sign in with Spotify
-          </span>
-          <FontAwesomeIcon icon={faMusic} className="ml-2" />
-        </button>
-      </div>
-    </div>
+        </Button >
+        </CardActions>
+      </Card>
+    </Box>
   )
-};
+}
 
 export default LoginBox;
