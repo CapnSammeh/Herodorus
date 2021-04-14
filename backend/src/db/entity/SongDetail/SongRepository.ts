@@ -21,6 +21,7 @@ export class SongRepository extends Repository<SongDetail>{
         }
     }
 
+    //TODO: This function occasionally throws an error because there's nothing in the db yet when a user first signs in.
     async getCurrentSong(user_id: number) {
         const userSong = await this.createQueryBuilder()
             .select("song_detail")
