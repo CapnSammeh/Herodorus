@@ -125,7 +125,7 @@ Promise.resolve(data).then(async connection => {
                 return next(createHttpError(500, "Error Logging into Express Session"))
               }
               //TODO Populate the DB here with some relevant information
-              if(req.user){getTenSongs(req.user)};
+              if (req.user) { getTenSongs(req.user) };
               return next(res.redirect('http://localhost:8080/art_page'));
             })
           } else {
@@ -156,6 +156,23 @@ Promise.resolve(data).then(async connection => {
           if (songQuery) {
             const currentSong: SongDetail = songQuery as SongDetail
             res.send(currentSong);
+          } else {
+            done(createHttpError(204, res))
+          }
+        }
+      });
+
+  app
+    .get('/api/currentsongimage',
+      async function (req: Request, res: Response, done) {
+        const user: UserDetail = req.user as UserDetail;
+        if (!user) {
+          done(createHttpError(403, res));
+        } else {
+          const songQuery = await songRepository.getCurrentSong(user.user_id);
+          if (songQuery) {
+            const currentSong: SongDetail = songQuery as SongDetail
+            res.send(currentSong.album_art);
           } else {
             done(createHttpError(204, res))
           }
