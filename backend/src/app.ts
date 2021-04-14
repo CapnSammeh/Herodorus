@@ -17,6 +17,8 @@ const app: Application = express();
 import { createConnection, getCustomRepository } from 'typeorm';
 import { UserDetail } from './db/entity/UserDetail/UserDetail';
 import { UserRepository } from './db/entity/UserDetail/UserRepository';
+import { SongDetail } from './db/entity/SongDetail/SongDetail';
+import { SongRepository } from './db/entity/SongDetail/SongRepository';
 
 //Import Middleware
 import morgan from 'morgan';
@@ -35,7 +37,7 @@ import './utilities/passport';
 const data = createConnection({
   type: "postgres",
   url: process.env.DEV_DATABASE_URL,
-  entities: [UserDetail],
+  entities: [UserDetail, SongDetail],
   synchronize: true
 })
 
@@ -44,6 +46,8 @@ Promise.resolve(data).then(async connection => {
   //Declare the Repositories for TypeORM
   const userDetail = connection.getRepository(UserDetail);
   const userRepository = getCustomRepository(UserRepository);
+  // const songDetail = connection.getRepository(SongDetail);
+  const songRepository = getCustomRepository(SongRepository);
 
   //Disable ETAG Header
   app
@@ -103,7 +107,7 @@ Promise.resolve(data).then(async connection => {
       function (req: Request, res: Response, next) {
         passport.authenticate('spotify', async function (err: Error, user: any, _info: any) {
           if (err) { return next(err) }
-          if (!user) { return res.redirect('/') }
+          if (!user) { return next(res.redirect('/')) }
           const saveUser = await userRepository.stampPassport(userDetail.create({
             spotify_id: user.id,
             email: user._json.email,
@@ -117,7 +121,8 @@ Promise.resolve(data).then(async connection => {
               if (err) {
                 return next(createHttpError(500, "Error Logging into Express Session"))
               }
-              return res.redirect('http://localhost:8080/art_page');
+              // return res.redirect('http://localhost:8080/art_page');
+              return next(res.redirect("http://localhost:3000/api/currentsong"));
             })
           } else {
             createHttpError(400, res);
@@ -135,6 +140,37 @@ Promise.resolve(data).then(async connection => {
       res.send()
       res.redirect('http://localhost:8080/')
     });
+
+
+  app
+    .get('/api/currentsong',
+      async function (req: Request, res: Response, done) {
+        const user: UserDetail = req.user as UserDetail;
+        if (!user) {
+          done(createHttpError(403, res));
+        } else {
+          const songQuery = await songRepository.getCurrentSong(user.user_id);
+          if (songQuery) {
+            const currentSong: SongDetail = songQuery as SongDetail
+            res.send(currentSong);
+          }
+        }
+      })
+
+  app
+    .get("/api/allsongs",
+      async function (req: Request, res: Response, done) {
+        const user: UserDetail = req.user as UserDetail;
+        if (!user) {
+          done(createHttpError(403, res));
+        } else {
+          const songsQuery = await songRepository.getAllSongs(user.user_id);
+          if (songsQuery) {
+            const songList: SongDetail[] = songsQuery as SongDetail[]
+            res.send(songList);
+          }
+        }
+      })
 
   //Listen on Ports...
   app
