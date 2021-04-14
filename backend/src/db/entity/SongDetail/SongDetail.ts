@@ -1,11 +1,14 @@
-import { Entity, Column, PrimaryColumn, ManyToOne } from "typeorm";
+import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserDetail } from "../UserDetail/UserDetail";
 
 @Entity()
 export class SongDetail {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     song_id: number;
+
+    @Column({nullable: false, unique: true})
+    spotify_song_id: string;
 
     @ManyToOne(() => UserDetail)
     user_: UserDetail;
