@@ -33,7 +33,7 @@ import passport from 'passport';
 import './utilities/passport';
 
 //Import Spotify Calls
-import { getTenSongs } from "./spotify-calls";
+import { getCurrentSong, getTenSongs } from "./spotify-calls";
 
 /* Run the Server */
 //Make a connection to the DB
@@ -102,7 +102,13 @@ Promise.resolve(data).then(async connection => {
 
   /* Manage Get Requests */
   app
-    .get('/api/auth/spotify', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private', 'user-read-recently-played'] }))
+    .get('/api/auth/spotify', passport.authenticate('spotify', { scope: [
+      'user-read-email', 
+      'user-read-private', 
+      'user-read-recently-played',
+      'user-read-playback-state',
+      'user-read-currently-playing'
+    ] }))
 
   // Take over after successful login
   app
@@ -125,7 +131,11 @@ Promise.resolve(data).then(async connection => {
                 return next(createHttpError(500, "Error Logging into Express Session"))
               }
               //TODO: Populate the DB here with some relevant information
-              if (req.user) { getTenSongs(req.user) };
+              if (req.user) { 
+                getTenSongs(req.user);
+                getCurrentSong(req.user); 
+              };
+              
               return next(res.redirect('http://localhost:8080/art_page'));
             })
           } else {
