@@ -27,6 +27,7 @@ export class SongRepository extends Repository<SongDetail>{
             .select("song_detail")
             .from(SongDetail, "song_detail")
             .where("song_detail.user_userId = :user_id", { user_id: user_id })
+            .orderBy("song_detail.played_datetime")
             .getOne();
         if (!userSong) {
             console.log("No Song Information for the specified user");
