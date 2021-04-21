@@ -7,6 +7,10 @@
           "@pages": "./src/pages",
           "@styles": "./src/styles"
         }
-      }]
+      }],
+      ["@babel/plugin-transform-runtime", {
+          "regenerator": true
+        }
+      ]
     ]
   }

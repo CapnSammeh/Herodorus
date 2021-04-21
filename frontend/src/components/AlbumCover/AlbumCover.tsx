@@ -3,16 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
 import AlbumImage from '../AlbumImage/AlbumImage'
 import axios from 'axios';
-
-const sendGetRequest = () => {
-  return axios({
-    url: '/api/currentsongimage',
-    method: 'GET'
-  }).then(response => {
-    console.log(response.data);
-    return response.data;
-  }) 
-}
+import useInterval from '../../hooks/useInterval';
 
 const useStyles = makeStyles(() => ({
   box: {
@@ -27,9 +18,18 @@ const useStyles = makeStyles(() => ({
 
 const AlbumCover: React.FC = () => {
   const [image, setImage] = React.useState("");
-  React.useEffect(() => {
-    sendGetRequest().then(data => setImage(data));
-  });
+
+  useInterval(
+    async () => {
+      const response = await axios({
+        url: '/api/currentsongimage',
+        method: 'GET'
+      });
+      setImage(response.data);
+    },
+    1000,
+  );
+
   const classes = useStyles();
   return (
     <Box className={classes.box}>
