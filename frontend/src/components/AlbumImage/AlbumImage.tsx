@@ -26,7 +26,7 @@ const AlbumImage: React.FC<AlbumImageProps> = (props) => {
     <div style={{width: '600px', height: '600px'}}>
       <Image
         src={imgsrc}
-        style={useStyles}
+        style={useStyles()}
         onClick={e => flipImage(e)}
         disableSpinner
       />
