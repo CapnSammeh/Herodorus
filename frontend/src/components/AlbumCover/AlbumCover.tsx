@@ -7,12 +7,9 @@ import useInterval from '../../hooks/useInterval';
 
 const useStyles = makeStyles(() => ({
   box: {
-    justifyContent: 'center',
-    alignItems: 'center',
     display: 'flex',
-    marginTop: '5vh',
-    borderRadius: 10,
-    heigh: "100vh",
+    marginTop: '1vw',
+    justifyContent: 'center'
   },
 }));
 
@@ -39,3 +36,4 @@ const AlbumCover: React.FC = () => {
 };
 
 export default AlbumCover;
+
