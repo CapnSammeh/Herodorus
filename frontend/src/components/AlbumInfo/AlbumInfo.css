@@ -1,0 +1,39 @@
+.albumInfo {
+    background: rgba( 255, 0, 0, 0.25 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 4px );
+    -webkit-backdrop-filter: blur( 4px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    display: flex;
+}
+
+h1 {
+    font-style: italic;
+}
+
+.box {
+    justify-content: center; 
+    display: flex;
+    margin-top: 1em;
+}
+
+.card {
+    text-align: center;
+    width: 20em;
+    padding: 25px;
+
+    /* GlassMorphism! */
+    background: rgba( 255, 0, 0, 0.25 );
+    background-color: silver;
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 4px );
+    -webkit-backdrop-filter: blur( 4px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+/* .oldAlbumInfo {
+    display: flex;
+     space-x-3; bg-gray-400 mx-auto rounded-xl max-w-sm shadow-xl
+} */
