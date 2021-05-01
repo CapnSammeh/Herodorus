@@ -15,10 +15,7 @@ const LoginButton: React.FC = () => {
           }
         })
         .then(response => response.status)
-        .catch(e => console.error(e));
-      console.log(result);
-      if (result == 403) {
-        console.log("Logged out!");
+      if (result != 200) {
         setButtonText("Login");
         setHref("/login");
       } else {
