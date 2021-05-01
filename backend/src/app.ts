@@ -74,7 +74,7 @@ Promise.resolve(data).then(async connection => {
         name: "id",
         cookie: {
           path: "/",
-          maxAge: 1800000
+          // maxAge: null
         }
       })
     )
