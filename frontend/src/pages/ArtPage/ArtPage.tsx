@@ -3,6 +3,7 @@ import React from 'react';
 import AlbumCover from "@components/AlbumCover/AlbumCover";
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import AlbumInfo from '@components/AlbumInfo/AlbumInfo';
 
 const ArtPage: React.FC = () => {
   const [auth, setAuth] = React.useState(true);
@@ -25,9 +26,12 @@ const ArtPage: React.FC = () => {
     fetchData();
   }, []);
 
-  if(auth == true){
+  if (auth == true) {
     return (
-      <AlbumCover />
+      <>
+        <AlbumCover />
+        <AlbumInfo />
+      </>
     );
   } else {
     return (
