@@ -21,13 +21,11 @@ const useStyles = makeStyles(() => ({
 const AlbumCover: React.FC = () => {
   const [image, setImage] = React.useState("");
   const [albumInfo, setAlbumInfo] = React.useState({
-    song_id: "",
-    spotify_song_id: "",
     song_title: "",
-    artist_name: "",
     album_name: "",
-    album_art: "",
-    played_datetime: ""
+    artist_name: "",
+    release_date: "",
+    popularity: "",
   });
 
   useInterval(
@@ -37,7 +35,7 @@ const AlbumCover: React.FC = () => {
         method: 'GET'
       }).then(response => response.data);
       //Only udpate if the currently playing song is different to what we're currently displaying
-      if (response.spotify_song_id !== albumInfo.spotify_song_id) {
+      if (response.song_title !== albumInfo.song_title) {
         setImage(response.album_art);
         setAlbumInfo(response);
       } else {
@@ -51,9 +49,12 @@ const AlbumCover: React.FC = () => {
     <Box className={classes.box}>
       <AlbumImage imgsrc={image} />
       <AlbumInfo
+        songTitle={albumInfo.song_title}
+        albumName={albumInfo.album_name}
         artistName={albumInfo.artist_name}
-        albumName={albumInfo.album_name}         
-        />
+        releaseDate={"Release Date: " + albumInfo.release_date}
+        popularity={"Popularity: " + albumInfo.popularity}
+      />
     </Box>
   )
 };
