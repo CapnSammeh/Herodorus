@@ -33,7 +33,9 @@ import passport from 'passport';
 import './utilities/passport';
 
 //Import Spotify Calls
+// import { getCurrentSong, getTenSongs } from "./spotify-calls";
 import { getCurrentSong, getTenSongs } from "./spotify-calls";
+
 
 /* Run the Server */
 //Make a connection to the DB
@@ -102,13 +104,15 @@ Promise.resolve(data).then(async connection => {
 
   /* Manage Get Requests */
   app
-    .get('/api/auth/spotify', passport.authenticate('spotify', { scope: [
-      'user-read-email', 
-      'user-read-private', 
-      'user-read-recently-played',
-      'user-read-playback-state',
-      'user-read-currently-playing'
-    ] }))
+    .get('/api/auth/spotify', passport.authenticate('spotify', {
+      scope: [
+        'user-read-email',
+        'user-read-private',
+        'user-read-recently-played',
+        'user-read-playback-state',
+        'user-read-currently-playing'
+      ]
+    }))
 
   // Take over after successful login
   app
@@ -131,11 +135,10 @@ Promise.resolve(data).then(async connection => {
                 return next(createHttpError(500, "Error Logging into Express Session"))
               }
               //TODO: Populate the DB here with some relevant information
-              if (req.user) { 
+              if (req.user) {
                 getTenSongs(req.user);
-                getCurrentSong(req.user); 
               };
-              
+
               return next(res.redirect('http://localhost:8080/art_page'));
             })
           } else {
@@ -153,10 +156,27 @@ Promise.resolve(data).then(async connection => {
       return next(res.redirect('http://localhost:8080/'));
     });
 
+  
+  const test = function (req: Request, _res: Response, next: any) {
+    console.log("MIDDLEWARE")
+    if(req.user){
+      console.log("-----------------")
+      console.log(req.user);
+      getCurrentSong(req.user);
+    }
+    next();
+  }
+
+
+  app
+    .use(test);
+
 
   app
     .get('/api/currentsong',
       async function (req: Request, res: Response, done) {
+        console.log("--CURRENTSONG--")
+        console.log(req.user);
         const user: UserDetail = req.user as UserDetail;
         if (!user) {
           done(createHttpError(403, res));
@@ -174,19 +194,20 @@ Promise.resolve(data).then(async connection => {
   app
     .get('/api/currentsongimage',
       async function (req: Request, res: Response, done) {
-        const user: UserDetail = req.user as UserDetail;
-        if (!user) {
-          done(createHttpError(403, res));
-        } else {
+        console.log("--CURRENTSONGIMAGE--")
+        if (req.user) {
+          let user = req.user as UserDetail;
+          console.log(user.access_token);
           const songQuery = await songRepository.getCurrentSong(user.user_id);
           if (songQuery) {
-            const currentSong: SongDetail = songQuery as SongDetail
+            const currentSong: SongDetail = songQuery as SongDetail;
             res.send(currentSong.album_art);
-          } else {
-            done(createHttpError(204, res))
           }
+        } else {
+          done(createHttpError(403, res));
         }
-      })
+      }
+    )
 
   app
     .get("/api/allsongs",
