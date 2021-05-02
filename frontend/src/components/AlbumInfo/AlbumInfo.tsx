@@ -2,35 +2,34 @@ import React from 'react';
 import "./AlbumInfo.css";
 import { CardContent, Card, Typography, Box } from '@material-ui/core';
 
-const AlbumInfo: React.FC = () => {
+type albumInfoProps = {
+    artistName: string,
+    albumName: string,
+    // labelName: String,
+    // releaseDate: String,
+    // totalPlays: String,
+}
+
+const AlbumInfo: React.FC<albumInfoProps> = (props) => {   
     return (
-        // <div className="albumInfo">
-        //     <div className="flex-1 text-center p-10">
-        //         <h1 id="artist_name" className="font-black text-4xl">Artist Name</h1>
-        //         <h2 id="album_name" className="font-light text-2xl">Album Name</h2>
-        //         <h2 id="label_name" className="font-bold text-3xl">Label Name</h2>
-        //         <h4 id="realease_date" className="font-extralight text-xl">Release Date</h4>
-        //         <h4 id="total_plays" className="font-extralight text-xl">Total Spotify Plays</h4>
-        //     </div>
-        // </div>
         <Box className="box">
             <Card variant="outlined" className="card">
                 <CardContent>
                     <Typography variant="h4" color="textPrimary">
-                        Artist Name
+                        {props.artistName}
                     </Typography>
                     <Typography variant="h5" color="textPrimary">
-                        Album Name
+                        {props.albumName}
+                    </Typography>
+                    {/* <Typography variant="h5" color="textPrimary">
+                        {props.labelName}
+                    </Typography> */}
+                    {/* <Typography variant="h5" color="textPrimary">
+                        {props.releaseDate}
                     </Typography>
                     <Typography variant="h5" color="textPrimary">
-                        Label Name
-                    </Typography>
-                    <Typography variant="h5" color="textPrimary">
-                        Release Date
-                    </Typography>
-                    <Typography variant="h5" color="textPrimary">
-                        Total Plays
-                    </Typography>
+                        {props.totalPlays}
+                    </Typography> */}
                 </CardContent>
             </Card>
         </Box>

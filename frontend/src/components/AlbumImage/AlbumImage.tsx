@@ -19,7 +19,6 @@ const AlbumImage: React.FC<AlbumImageProps> = (props) => {
     });
   }, [props.imgsrc, setFade]);
 
-  console.log(props);
   return (
     // <animated.img style={animation} src={props.imgsrc} onClick={e => flipImage(e)} />
     <div onClick={() => alert("You clicked me!")}>

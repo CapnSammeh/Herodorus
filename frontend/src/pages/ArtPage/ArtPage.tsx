@@ -2,7 +2,6 @@ import React from 'react';
 import AlbumCover from "@components/AlbumCover/AlbumCover";
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import AlbumInfo from '@components/AlbumInfo/AlbumInfo';
 import "./ArtPage.css";
 
 const ArtPage: React.FC = () => {
@@ -30,7 +29,6 @@ const ArtPage: React.FC = () => {
     return (
       <div className="artWrapper">
         <AlbumCover />
-        <AlbumInfo />
       </div>
     );
   } else {
