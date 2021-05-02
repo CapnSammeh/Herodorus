@@ -1,6 +1,8 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
+import BrushIcon from '@material-ui/icons/Brush';
+import { IconButton } from '@material-ui/core';
 
 const LoginButton: React.FC = () => {
   const [buttonText, setButtonText] = React.useState("");
@@ -29,7 +31,12 @@ const LoginButton: React.FC = () => {
   }, [setButtonText]);
 
   return (
-    <Button color="inherit" href={href}>{buttonText}</Button>
+    <>
+      <IconButton edge="start" color="inherit" aria-label="menu" href="/art_page">
+        <BrushIcon />
+      </IconButton>
+      <Button color="inherit" href={href}>{buttonText}</Button>
+    </>
   )
 };
 

@@ -1,9 +1,9 @@
 import React from 'react';
-// import AlbumInfo from "@components/AlbumInfo/AlbumInfo";
 import AlbumCover from "@components/AlbumCover/AlbumCover";
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import AlbumInfo from '@components/AlbumInfo/AlbumInfo';
+import "./ArtPage.css";
 
 const ArtPage: React.FC = () => {
   const [auth, setAuth] = React.useState(true);
@@ -28,10 +28,10 @@ const ArtPage: React.FC = () => {
 
   if (auth == true) {
     return (
-      <>
+      <div className="artWrapper">
         <AlbumCover />
         <AlbumInfo />
-      </>
+      </div>
     );
   } else {
     return (
