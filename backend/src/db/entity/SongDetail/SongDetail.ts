@@ -24,9 +24,14 @@ export class SongDetail {
 
     @Column()
     album_art: string;
+    
+    @Column()
+    release_date: Date;
 
     @Column()
+    popularity: Number
+    
+    @Column()
     played_datetime: Date;
-
-    //TODO: Should there be a timestamp here? That way we can just remove the oldest thing that's been listened too?
+    
 }
