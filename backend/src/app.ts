@@ -33,7 +33,6 @@ import passport from 'passport';
 import './utilities/passport';
 
 //Import Spotify Calls
-// import { getCurrentSong, getTenSongs } from "./spotify-calls";
 import { getCurrentSong, getTenSongs } from "./spotify-calls";
 
 
@@ -158,10 +157,7 @@ Promise.resolve(data).then(async connection => {
 
   
   const test = function (req: Request, _res: Response, next: any) {
-    console.log("MIDDLEWARE")
     if(req.user){
-      console.log("-----------------")
-      console.log(req.user);
       getCurrentSong(req.user);
     }
     next();
@@ -175,8 +171,6 @@ Promise.resolve(data).then(async connection => {
   app
     .get('/api/currentsong',
       async function (req: Request, res: Response, done) {
-        console.log("--CURRENTSONG--")
-        console.log(req.user);
         const user: UserDetail = req.user as UserDetail;
         if (!user) {
           done(createHttpError(403, res));
@@ -194,10 +188,8 @@ Promise.resolve(data).then(async connection => {
   app
     .get('/api/currentsongimage',
       async function (req: Request, res: Response, done) {
-        console.log("--CURRENTSONGIMAGE--")
         if (req.user) {
           let user = req.user as UserDetail;
-          console.log(user.access_token);
           const songQuery = await songRepository.getCurrentSong(user.user_id);
           if (songQuery) {
             const currentSong: SongDetail = songQuery as SongDetail;
