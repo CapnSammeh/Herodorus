@@ -83,49 +83,41 @@ export async function getCurrentSong(user: Express.User) {
     const userDetail = getRepository(UserDetail);
     const dbUser = await userDetail.findOne(appUser.user_id);
     if (dbUser) {
-        (async () => {
-            try {
-                const request = await fetch(
-                    'https://api.spotify.com/v1/me/player', {
-                    method: "GET",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + dbUser.access_token,
-                    }
-                })
-                if (request.status == 502) {
-                    console.log("Connection Timeout");
-                    await getCurrentSong(user);
-                } else if (request.status == 401) {
-                    console.log("401 Error");
-                    await updateSpotifyAccessToken(user);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    await getCurrentSong(user);
-                } else {
-                    const songData = await request.json();
-                    const songInformation = await spotifyGetTrack(dbUser.access_token, songData.item.id);
-                    const song: Omit<SongDetail, 'song_id'> = {
-                        album_art: songInformation.album.images[0].url,
-                        spotify_song_id: songInformation.id,
-                        artist_name: songInformation.album.artists[0].name,
-                        album_name: songInformation.album.name,
-                        song_title: songInformation.name,
-                        played_datetime: new Date(),
-                        user_: dbUser
-                    }
-                    getManager().createQueryBuilder()
-                        .insert()
-                        .into(SongDetail)
-                        .values([song])
-                        .onConflict(`DO NOTHING`)
-                        .execute();
-                    await getCurrentSong(user);
-                }
-            } catch (e) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                await getCurrentSong(user);
+        const request = await fetch(
+            'https://api.spotify.com/v1/me/player', {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + dbUser.access_token,
             }
-        })();
+        })
+        if (request.status == 502) {
+            console.log("Connection Timeout");
+            await getCurrentSong(user);
+        } else if (request.status == 401) {
+            console.log("401 Error");
+            await updateSpotifyAccessToken(user);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await getCurrentSong(user);
+        } else {
+            const songData = await request.json();
+            const songInformation = await spotifyGetTrack(dbUser.access_token, songData.item.id);
+            const song: Omit<SongDetail, 'song_id'> = {
+                album_art: songInformation.album.images[0].url,
+                spotify_song_id: songInformation.id,
+                artist_name: songInformation.album.artists[0].name,
+                album_name: songInformation.album.name,
+                song_title: songInformation.name,
+                played_datetime: new Date(),
+                user_: dbUser
+            }
+            getManager().createQueryBuilder()
+                .insert()
+                .into(SongDetail)
+                .values([song])
+                .onConflict(`DO NOTHING`)
+                .execute();
+        }
     }
 }
 
