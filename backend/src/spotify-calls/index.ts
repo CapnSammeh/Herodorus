@@ -29,28 +29,30 @@ export async function getSongInformation(user: Express.User, songID: string) {
 
 export async function getTenSongs(user: Express.User) {
     const dbUser: UserDetail = user as UserDetail;
-    (async () => {
-        try {
-            const request = await fetch(
-                "https://api.spotify.com/v1/me/player/recently-played?limit=10", {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + dbUser.access_token,
-                }
-                //TODO: If this thing fails because of a forbidden error, it means we've probably got a bum access token; we need to generate a new one. 
-            })
-            if (request.status == 502) {
-                console.log("Connection Timeout");
-                await getTenSongs(user);
-            } else if (request.status == 401) {
-                await updateSpotifyAccessToken(user);
-                // const userRepository = getCustomRepository(UserRepository);
-                // userRepository.updateAccessToken(dbUser.user_id, dbUser.access_token);
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                await getTenSongs(user);
-            } else {
-                const songList = await request.json();
+    if (dbUser) {
+        const request = await fetch(
+            "https://api.spotify.com/v1/me/player/recently-played?limit=10", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + dbUser.access_token,
+            }
+        })
+        if (request.status == 502) {
+            //Attempt to run again, we had a timeout.
+            console.log("Connection Timeout");
+            await getTenSongs(user);
+        } else if (request.status == 401) {
+            //Wait some time before trying again
+            await updateSpotifyAccessToken(user);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await getTenSongs(user);
+        } else {
+            //Process the content
+            const songText = await request.text();
+            if (songText) {
+                //The Spotify API will return invalid JSON if there's nothing here, so we have to compensate by putting in a text => json check
+                const songList = JSON.parse(songText);
                 for (var songData of songList.items) {
                     const song: Omit<SongDetail, "song_id"> = {
                         album_art: songData.track.album.images[0].url,
@@ -60,7 +62,7 @@ export async function getTenSongs(user: Express.User) {
                         song_title: songData.track.name,
                         played_datetime: songData.played_at,
                         popularity: songData.track.popularity,
-                        release_date: songData.track.album.release_date,                        
+                        release_date: songData.track.album.release_date,
                         user_: dbUser
                     }
                     //TODO: This needs to be refactored
@@ -72,11 +74,8 @@ export async function getTenSongs(user: Express.User) {
                         .execute();
                 }
             }
-        } catch (e) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            await getTenSongs(user);
         }
-    })();
+    };
 }
 
 export async function getCurrentSong(user: Express.User) {
@@ -102,25 +101,29 @@ export async function getCurrentSong(user: Express.User) {
             await new Promise(resolve => setTimeout(resolve, 1000));
             await getCurrentSong(user);
         } else {
-            const songList = await request.json();
-            const songData = await spotifyGetTrack(dbUser.access_token, songList.item.id);
-            const song: Omit<SongDetail, 'song_id'> = {
-                album_art: songData.album.images[0].url,
-                spotify_song_id: songData.id,
-                artist_name: songData.album.artists[0].name,
-                album_name: songData.album.name,
-                song_title: songData.name,
-                played_datetime: new Date(),
-                popularity: songData.popularity,
-                release_date: songData.album.release_date,
-                user_: dbUser
+            const songText = await request.text();
+            if (songText) {
+                //The Spotify API will return invalid JSON if there's nothing here, so we have to compensate by putting in a text => json check
+                const songList = JSON.parse(songText);
+                const songData = await spotifyGetTrack(dbUser.access_token, songList.item.id);
+                const song: Omit<SongDetail, 'song_id'> = {
+                    album_art: songData.album.images[0].url,
+                    spotify_song_id: songData.id,
+                    artist_name: songData.album.artists[0].name,
+                    album_name: songData.album.name,
+                    song_title: songData.name,
+                    played_datetime: new Date(),
+                    popularity: songData.popularity,
+                    release_date: songData.album.release_date,
+                    user_: dbUser
+                }
+                getManager().createQueryBuilder()
+                    .insert()
+                    .into(SongDetail)
+                    .values([song])
+                    .onConflict(`DO NOTHING`)
+                    .execute();
             }
-            getManager().createQueryBuilder()
-                .insert()
-                .into(SongDetail)
-                .values([song])
-                .onConflict(`DO NOTHING`)
-                .execute();
         }
     }
 }
