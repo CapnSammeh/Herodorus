@@ -1,17 +1,20 @@
 //Import Passport
 import passport from 'passport';
-import { UserDetail } from 'src/db/entity/UserDetail/UserDetail';
-// import { getRepository } from 'typeorm';
+import { UserDetail } from '../db/entity/UserDetail/UserDetail';
+import { getRepository } from 'typeorm';
 const SpotifyStrategy = require('passport-spotify').Strategy;
 
 /* Setup Passport */
 passport.serializeUser(function (user, done) {
     const appUser = user as UserDetail;
     done(null, appUser);
-});
+}); 
 
-passport.deserializeUser(function (id: string, done) {    
-    done(null, id);
+passport.deserializeUser(async function (id: UserDetail, done) {    
+    const userDetail = getRepository(UserDetail);
+    const user = await userDetail.findOne(id.user_id);
+    done(null, user);
+
 })
 
 passport.use(

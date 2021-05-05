@@ -21,11 +21,13 @@ export class SongRepository extends Repository<SongDetail>{
         }
     }
 
+    //TODO: This function occasionally throws an error because there's nothing in the db yet when a user first signs in.
     async getCurrentSong(user_id: number) {
         const userSong = await this.createQueryBuilder()
             .select("song_detail")
             .from(SongDetail, "song_detail")
             .where("song_detail.user_userId = :user_id", { user_id: user_id })
+            .orderBy("song_detail.played_datetime", "DESC")
             .getOne();
         if (!userSong) {
             console.log("No Song Information for the specified user");

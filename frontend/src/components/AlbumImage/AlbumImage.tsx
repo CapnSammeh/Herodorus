@@ -1,34 +1,32 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { useSpring, animated } from 'react-spring';
 
 interface AlbumImageProps {
   imgsrc: string
 }
 
-const useStyles = makeStyles(() => ({
-  img: {
-    margin: 'auto',
-    objectFit: 'contain',
-    userSelect: 'none',
-  },
-}))
-
-function flipImage(e:React.MouseEvent){
-  //TODO: Put some fancy transform here so the element flips
-  alert("You clicked me!" + e.type);
-}
-
 const AlbumImage: React.FC<AlbumImageProps> = (props) => {
-  const { imgsrc } = props;
-  const classes = useStyles();
+  const [fade, setFade] = useSpring(() => ({ opacity: 0 }));
+  const [img, setImage] = useState("");
+  useEffect(() => {
+    setImage(props.imgsrc);
+    setFade.start({
+      to: { opacity: 1 },
+      from: { opacity: 0 },
+      config: {
+        duration: 1500
+      }
+    });
+  }, [props.imgsrc, setFade]);
+
   return (
-    <img
-       
-      className = {classes.img} 
-      src = {imgsrc} 
-      onClick = {e => flipImage(e)}
-    />
+    // <animated.img style={animation} src={props.imgsrc} onClick={e => flipImage(e)} />
+    <div onClick={() => alert("You clicked me!")}>
+      <animated.div style={fade}>
+        <img src={img} />
+      </animated.div>
+    </div>
   )
-};
+}
 
 export default AlbumImage;

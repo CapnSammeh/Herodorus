@@ -18,8 +18,8 @@ export class UserRepository extends Repository<UserDetail> {
             return this.save(user);
         } else {
             //If the user is in the DB, update their accesstoken and refreshtoken
-            this.updateRefreshToken(currentUser.user_id, currentUser.refresh_token);
-            this.updateAccessToken(currentUser.user_id, currentUser.access_token);
+            this.updateRefreshToken(user.user_id, user.refresh_token);
+            this.updateAccessToken(user.user_id, user.access_token);
             console.log("User in DB");
             return currentUser;
         }
@@ -55,7 +55,9 @@ export class UserRepository extends Repository<UserDetail> {
         }
     }
 
-    //Function for updating teh user's access token
+    //TODO: Include a section here for remove the access token and refresh token from a user when they logout.
+
+    //Function for updating the user's access token
     async updateAccessToken(user_id: number, access_token: string) {
         const user = await this.createQueryBuilder()
             .select("user_detail")

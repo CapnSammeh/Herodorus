@@ -32,6 +32,10 @@ import createHttpError from 'http-errors';
 import passport from 'passport';
 import './utilities/passport';
 
+//Import Spotify Calls
+import { getCurrentSong, getTenSongs } from "./spotify-calls";
+
+
 /* Run the Server */
 //Make a connection to the DB
 const data = createConnection({
@@ -71,7 +75,7 @@ Promise.resolve(data).then(async connection => {
         name: "id",
         cookie: {
           path: "/",
-          maxAge: 1800000
+          // maxAge: null
         }
       })
     )
@@ -99,7 +103,15 @@ Promise.resolve(data).then(async connection => {
 
   /* Manage Get Requests */
   app
-    .get('/api/auth/spotify', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private'] }))
+    .get('/api/auth/spotify', passport.authenticate('spotify', {
+      scope: [
+        'user-read-email',
+        'user-read-private',
+        'user-read-recently-played',
+        'user-read-playback-state',
+        'user-read-currently-playing'
+      ]
+    }))
 
   // Take over after successful login
   app
@@ -121,6 +133,11 @@ Promise.resolve(data).then(async connection => {
               if (err) {
                 return next(createHttpError(500, "Error Logging into Express Session"))
               }
+              //TODO: Populate the DB here with some relevant information
+              if (req.user) {
+                getTenSongs(req.user);
+              };
+
               return next(res.redirect('http://localhost:8080/art_page'));
             })
           } else {
@@ -131,13 +148,24 @@ Promise.resolve(data).then(async connection => {
 
   //TODO: Manage Sessions/Logout
 
-  //FIXME: This is current broken; spinning wheel on logout.
   app
     .get('/api/logout', function (req: Request, res: Response, next) {
       //Handle the session termination here
       req.logout();
       return next(res.redirect('http://localhost:8080/'));
     });
+
+  
+  const test = function (req: Request, _res: Response, next: any) {
+    if(req.user){
+      getCurrentSong(req.user);
+    }
+    next();
+  }
+
+
+  app
+    .use(test);
 
 
   app
@@ -155,7 +183,23 @@ Promise.resolve(data).then(async connection => {
             done(createHttpError(204, res))
           }
         }
-      })
+      });
+
+  app
+    .get('/api/currentsongimage',
+      async function (req: Request, res: Response, done) {
+        if (req.user) {
+          let user = req.user as UserDetail;
+          const songQuery = await songRepository.getCurrentSong(user.user_id);
+          if (songQuery) {
+            const currentSong: SongDetail = songQuery as SongDetail;
+            res.send(currentSong.album_art);
+          }
+        } else {
+          done(createHttpError(403, res));
+        }
+      }
+    )
 
   app
     .get("/api/allsongs",

@@ -6,4 +6,7 @@
     h1 {
         @apply text-3xl text-black;
     }
+    html, body {
+        height: 100%;
+    }
 }
