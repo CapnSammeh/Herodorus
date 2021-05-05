@@ -59,6 +59,8 @@ export async function getTenSongs(user: Express.User) {
                         album_name: songData.track.album.name,
                         song_title: songData.track.name,
                         played_datetime: songData.played_at,
+                        popularity: songData.track.popularity,
+                        release_date: songData.track.album.release_date,                        
                         user_: dbUser
                     }
                     //TODO: This needs to be refactored
@@ -100,15 +102,17 @@ export async function getCurrentSong(user: Express.User) {
             await new Promise(resolve => setTimeout(resolve, 1000));
             await getCurrentSong(user);
         } else {
-            const songData = await request.json();
-            const songInformation = await spotifyGetTrack(dbUser.access_token, songData.item.id);
+            const songList = await request.json();
+            const songData = await spotifyGetTrack(dbUser.access_token, songList.item.id);
             const song: Omit<SongDetail, 'song_id'> = {
-                album_art: songInformation.album.images[0].url,
-                spotify_song_id: songInformation.id,
-                artist_name: songInformation.album.artists[0].name,
-                album_name: songInformation.album.name,
-                song_title: songInformation.name,
+                album_art: songData.album.images[0].url,
+                spotify_song_id: songData.id,
+                artist_name: songData.album.artists[0].name,
+                album_name: songData.album.name,
+                song_title: songData.name,
                 played_datetime: new Date(),
+                popularity: songData.popularity,
+                release_date: songData.album.release_date,
                 user_: dbUser
             }
             getManager().createQueryBuilder()
