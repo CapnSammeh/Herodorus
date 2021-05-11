@@ -1,6 +1,7 @@
 import React from 'react';
 import "./AlbumInfo.css";
 import { CardContent, Card, Typography, Box } from '@material-ui/core';
+import Rating from "@material-ui/lab/Rating"
 
 type albumInfoProps = {
     songTitle: string,
@@ -27,9 +28,13 @@ const AlbumInfo: React.FC<albumInfoProps> = (props) => {
                     <Typography variant="h5" color="textPrimary">
                         {props.releaseDate}
                     </Typography>
-                    <Typography variant="h5" color="textPrimary">
-                        {props.popularity}
-                    </Typography>
+                    <Rating
+                        name="popularity"
+                        value={parseInt(props.popularity)}
+                        disabled
+                        precision={0.5}
+                        size="large"
+                    />
                 </CardContent>
             </Card>
         </Box>
