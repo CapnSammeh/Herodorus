@@ -156,7 +156,7 @@ Promise.resolve(data).then(async connection => {
     });
 
   
-  const test = function (req: Request, _res: Response, next: any) {
+  const retrieveUserCurrentSong = function (req: Request, _res: Response, next: any) {
     if(req.user){
       getCurrentSong(req.user);
     }
@@ -165,7 +165,7 @@ Promise.resolve(data).then(async connection => {
 
   //TODO: This needs cleaning
   app
-    .use(test);
+    .use(retrieveUserCurrentSong);
 
 
   app

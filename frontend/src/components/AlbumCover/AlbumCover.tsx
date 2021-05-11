@@ -19,6 +19,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const AlbumCover: React.FC = () => {
+
   const [image, setImage] = React.useState("");
   const [albumInfo, setAlbumInfo] = React.useState({
     song_title: "",
@@ -60,6 +61,4 @@ const AlbumCover: React.FC = () => {
 };
 
 
-
 export default AlbumCover;
-

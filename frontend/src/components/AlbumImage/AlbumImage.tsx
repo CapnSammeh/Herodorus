@@ -6,8 +6,10 @@ interface AlbumImageProps {
 }
 
 const AlbumImage: React.FC<AlbumImageProps> = (props) => {
+  
   const [fade, setFade] = useSpring(() => ({ opacity: 0 }));
   const [img, setImage] = useState("");
+  
   useEffect(() => {
     setImage(props.imgsrc);
     setFade.start({
@@ -20,7 +22,6 @@ const AlbumImage: React.FC<AlbumImageProps> = (props) => {
   }, [props.imgsrc, setFade]);
 
   return (
-    // <animated.img style={animation} src={props.imgsrc} onClick={e => flipImage(e)} />
     <div onClick={() => alert("You clicked me!")}>
       <animated.div style={fade}>
         <img src={img} />
