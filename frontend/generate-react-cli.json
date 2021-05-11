@@ -3,10 +3,13 @@
   "usesCssModule": true,
   "cssPreprocessor": "css",
   "testLibrary": "None",
+  "customTemplates": {
+    "component": "templates/components/TemplateName.tsx"
+  },
   "component": {
     "default": {
       "path": "src/components",
-      "withStyle": false,
+      "withStyle": true,
       "withTest": false,
       "withStory": false,
       "withLazy": false
