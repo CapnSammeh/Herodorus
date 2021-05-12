@@ -53,7 +53,7 @@ export async function getTenSongs(user: Express.User) {
             if (songText) {
                 //The Spotify API will return invalid JSON if there's nothing here, so we have to compensate by putting in a text => json check
                 const songList = JSON.parse(songText);
-                for (var songData of songList.items) {
+                for (const songData of songList.items) {
                     const song: Omit<SongDetail, "song_id"> = {
                         album_art: songData.track.album.images[0].url,
                         spotify_song_id: songData.track.id,

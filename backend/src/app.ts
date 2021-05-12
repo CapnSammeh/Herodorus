@@ -50,7 +50,6 @@ Promise.resolve(data).then(async connection => {
   //Declare the Repositories for TypeORM
   const userDetail = connection.getRepository(UserDetail);
   const userRepository = getCustomRepository(UserRepository);
-  // const songDetail = connection.getRepository(SongDetail);
   const songRepository = getCustomRepository(SongRepository);
 
   //Disable ETAG Header
@@ -138,7 +137,7 @@ Promise.resolve(data).then(async connection => {
                 getTenSongs(req.user);
               };
 
-              return next(res.redirect('http://localhost:8080/art_page'));
+              return (res.redirect('http://localhost:8080/art_page'));
             })
           } else {
             createHttpError(400, res);
