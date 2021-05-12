@@ -53,7 +53,7 @@ const AlbumCover: React.FC = () => {
         songTitle={albumInfo.song_title}
         albumName={albumInfo.album_name}
         artistName={albumInfo.artist_name}
-        releaseDate={"Release Date: " + albumInfo.release_date}
+        releaseDate={albumInfo.release_date}
         popularity={albumInfo.popularity}
       />
     </Box>

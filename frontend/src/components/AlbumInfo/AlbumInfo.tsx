@@ -15,22 +15,27 @@ type albumInfoProps = {
 
 const AlbumInfo: React.FC<albumInfoProps> = (props) => {
     const popularityValue = Math.ceil(parseInt(props.popularity)/20);
+    console.log(props.releaseDate);
     console.log("Popularity: " + popularityValue + "/5");
+
+    const releaseDate = new Date(props.releaseDate).toLocaleDateString();    
+
     return (
         <Box className="box">
             <Card variant="outlined" className="card">
                 <CardContent>
-                    <Typography variant="h4" color="textPrimary">
+                    <Typography variant="h2" color="textPrimary">
                         {props.songTitle}
                     </Typography>
-                    <Typography variant="h5" color="textPrimary">
+                    <Typography variant="h6" color="textPrimary">
                         {props.albumName}
                     </Typography>
                     <Typography variant="h5" color="textPrimary">
                         {props.artistName}
                     </Typography>
+                    <br />
                     <Typography variant="h5" color="textPrimary">
-                        {props.releaseDate}
+                        {"Released: " + releaseDate}
                     </Typography>
                     <Rating
                         start={0}
