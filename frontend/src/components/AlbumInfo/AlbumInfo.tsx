@@ -1,7 +1,9 @@
 import React from 'react';
 import "./AlbumInfo.css";
 import { CardContent, Card, Typography, Box } from '@material-ui/core';
-import Rating from "@material-ui/lab/Rating"
+import Star from "@material-ui/icons/Star";
+import StarBorder from "@material-ui/icons/StarBorder";
+import Rating from 'react-rating';
 
 type albumInfoProps = {
     songTitle: string,
@@ -11,7 +13,9 @@ type albumInfoProps = {
     popularity: string,
 }
 
-const AlbumInfo: React.FC<albumInfoProps> = (props) => {   
+const AlbumInfo: React.FC<albumInfoProps> = (props) => {
+    const popularityValue = Math.ceil(parseInt(props.popularity)/20);
+    console.log("Popularity: " + popularityValue + "/5");
     return (
         <Box className="box">
             <Card variant="outlined" className="card">
@@ -29,11 +33,13 @@ const AlbumInfo: React.FC<albumInfoProps> = (props) => {
                         {props.releaseDate}
                     </Typography>
                     <Rating
-                        name="popularity"
-                        value={parseInt(props.popularity)}
-                        disabled
-                        precision={0.5}
-                        size="large"
+                        start={0}
+                        stop={5}
+                        fractions={2}
+                        readonly
+                        emptySymbol={<StarBorder />}
+                        fullSymbol={<Star />}
+                        initialRating={popularityValue}
                     />
                 </CardContent>
             </Card>
