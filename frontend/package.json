@@ -38,6 +38,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-query-devtools": "^2.6.3",
+    "react-rating": "^2.0.5",
     "react-router-dom": "^5.2.0",
     "react-spring": "^9.1.1",
     "styled-components": "^5.2.1"

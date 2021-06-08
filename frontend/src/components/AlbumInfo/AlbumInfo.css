@@ -20,7 +20,6 @@ h1 {
 
 .card {
     text-align: center;
-    width: 20em;
     padding: 25px;
 
     /* GlassMorphism! */
@@ -32,8 +31,3 @@ h1 {
     border-radius: 10px;
     border: 1px solid rgba( 255, 255, 255, 0.18 );
 }
-
-/* .oldAlbumInfo {
-    display: flex;
-     space-x-3; bg-gray-400 mx-auto rounded-xl max-w-sm shadow-xl
-} */
