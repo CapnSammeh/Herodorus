@@ -12,7 +12,7 @@ const AlbumImage: React.FC<AlbumImageProps> = (props) => {
   const matches = useMediaQuery(theme.breakpoints.down('sm'));
   console.log(matches);
 
-  const [fade, setFade] = useSpring(() => ({ opacity: 0, width:"80%", maxWidth:"60%" }));
+  const [fade, setFade] = useSpring(() => ({ opacity: 0, width:"130%"}));
   const [img, setImage] = useState("");
 
   useEffect(() => {
