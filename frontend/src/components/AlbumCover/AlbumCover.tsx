@@ -33,15 +33,15 @@ const AlbumCover: React.FC = () => {
   );
 
   return (
-    <div style={{ paddingTop: '8em' }}>
+    <div style={{ paddingTop: '2em' }}>
       <Grid
         className="responsive"
         container
-        spacing={3}
+        // spacing={5}
         alignContent="center"
       >
         <Grid item xs />
-        <Grid item xs={6}>
+        <Grid item xs={8}>
           <Box>
             <div style={{display:"flex", justifyContent: "center"}}>
             <AlbumImage imgsrc={image} />

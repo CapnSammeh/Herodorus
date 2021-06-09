@@ -31,17 +31,16 @@ const AlbumInfo: React.FC<albumInfoProps> = (props) => {
             <Card variant="outlined" className="card">
                 <CardContent>
                     <ThemeProvider theme={theme}>
-                        <Typography variant="h2" color="textPrimary">
+                        <Typography variant="h4" color="textPrimary">
                             {props.songTitle}
                         </Typography>
-                        <Typography variant="h6" color="textPrimary">
+                        <Typography variant="h5" color="textPrimary">
                             {props.albumName}
                         </Typography>
-                        <Typography variant="h5" color="textPrimary">
+                        <Typography variant="h6" color="textPrimary">
                             {props.artistName}
                         </Typography>
-                        <br />
-                        <Typography variant="h5" color="textPrimary">
+                        <Typography variant="h6" color="textPrimary">
                             {"Released: " + releaseDate}
                         </Typography>
                         <Rating
